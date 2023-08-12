@@ -1,0 +1,27 @@
+name: Codebase build 
+
+# Trigger on every push (+PR) to the repository
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        # Access the repository
+      - uses: actions/checkout@v3
+        # Set up the Golang environment
+      - name: Set up Go 
+        uses: actions/setup-go@v4
+        with:
+          # Use version defined in `go.mod` file
+          go-version-file: 'go.mod'
+      - run: go version
+        # Use the Makefile to build the codebase
+        # Manually installing dependencies is not required
+        # because `go build <...>` takes care of it.
+      - name: Build
+        run: make build 
+        # Use the Makefile to run the tests
+      - name: Test
+        run: make test 
+
