@@ -1,7 +1,7 @@
 name: Codebase build 
 
-# Trigger on every push to the repository
-on: [push]
+# Trigger on every push (+PR) to the repository
+on: [push, pull_request]
 
 jobs:
   build:
@@ -13,11 +13,12 @@ jobs:
       - name: Set up Go 
         uses: actions/setup-go@v4
         with:
-          go-version: '1.2'
-        # Install the required dependencies
-      - name: Install dependencies
-        run: go get .
+          # Use version defined in `go.mod` file
+          go-version-file: 'go.mod'
+      - run: go version
         # Use the Makefile to build the codebase
+        # Manually installing dependencies is not required
+        # because `go build <...>` takes care of it.
       - name: Build
         run: make build 
         # Use the Makefile to run the tests
