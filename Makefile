@@ -4,7 +4,7 @@ lint:
 	echo "TODO: add linting"
 
 test:
-	echo "TODO: add tests" 
+	go test ./...
 
 build:
 	go build -o bin/saol-cli main.go
