@@ -1,34 +1,26 @@
+// Command saol-cli prints the SAOL entries of a Swedish noun.
 package main
 
 import (
 	"flag"
-  "fmt"
-  "github.com/michalspano/saol.se-cli/pkg/saolcli"
-  "github.com/michalspano/saol.se-cli/cmd/utils"
+	"fmt"
+	"os"
+
+	"github.com/michalspano/saol.se-cli/pkg/saol"
 )
 
-// An example entry point of the SAOL package.
 func main() {
-	query := flag.String("query", "", "A word passed to SAOL [required]")
-  isID  := flag.Bool("id", false, "Whether to use the ID of the word [default: false]")
-  wordType := flag.String("type", "", "The type of the word [optional]")
+	query := flag.String("query", "", "the noun to look up in SAOL (required)")
 	flag.Parse()
-
 	if *query == "" {
-		panic("No word provided.")
+		flag.Usage()
+		os.Exit(2)
 	}
 
-  // Do some formatting of the wordType.
-  // Remove whitespaces, turn to lowercase.
-  fwordType := utils.FormatWordType(*wordType) 
-  
-  // Call the Execute function from the saol package.
-	result, err := saol.Execute(*query, *isID, fwordType)
+	entries, err := saol.Lookup(*query)
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
-  
-  // Display the result
-	fmt.Println(result)
+	fmt.Println(saol.Format(entries))
 }
